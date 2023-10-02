@@ -40,6 +40,9 @@ header{
     border-bottom-left-radius: 50px;
     border-bottom-right-radius: 50px;
 }
+label{
+    display: block;
+}
 .SearchContainer input{
     border:none;
     outline: none;
