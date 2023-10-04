@@ -1,16 +1,19 @@
-setTimeout(() => {
-    const brr = JSON.parse(localStorage.getItem("ResultArray"))
+const brr = JSON.parse(localStorage.getItem("ResultArray"));
 // const results = "results";
 const arr = brr.results;
+let map;
+initMap()
 
-console.log(arr)
-function renderUI(){
-    const listing = document.getElementById("Listings")
+console.log(arr);
 
-    for(let i=0;i<8;i++){
-        const block = document.createElement("div");
-        block.className = "block1";
-        block.innerHTML = `
+
+function renderUI() {
+  const listing = document.getElementById("Listings");
+
+  for (let i = 0; i < 8; i++) {
+    const block = document.createElement("div");
+    block.className = "block1";
+    block.innerHTML = `
         <div class="listing-image">
                                 <img src="${arr[i].images[0]}" alt="">
                             </div>
@@ -34,18 +37,61 @@ function renderUI(){
                                 </div>
                             </div>
                             
-                            `
-                            // <div class="block-divider"></div>
-                            const divider = document.createElement("div")
-                            divider.className = "block-divider"
-                            // block.appendChild(divider)
-    
-                            listing.append(block,divider)
-    }
-   
+                            `;
 
+    // render marker on map for the location
+    let pos ={ lat:  arr[i].lat, lng: arr[i].lng };
+    renderMarker(pos);
+    // <div class="block-divider"></div>
+    const divider = document.createElement("div");
+    divider.className = "block-divider";
+    // block.appendChild(divider)
+    listing.append(block,divider)
+  }
 }
 
-renderUI()
+renderUI();
 
-}, 5000);
+
+
+async function initMap() {
+  // The location of Uluru
+  const position = { lat:  12.92974, lng: 75.80003 };
+//   const position1 = { lat: 12.94582, lng: 75.78859 };
+  // Request needed libraries.
+  //@ts-ignore
+  const { Map } = await google.maps.importLibrary("maps");
+//   const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+  // The map, centered at Uluru
+  map = new Map(document.getElementById("map"), {
+    zoom: 15,
+    center: position,
+    mapId: "DEMO_MAP_ID",
+  });
+
+//   const marker = new AdvancedMarkerElement({
+//     map: map,
+//     position: position,
+//     title: "sak",
+//   });
+
+//   const marker1 = new AdvancedMarkerElement({
+//     map: map,
+//     position: position1,
+//     title: "sak",
+//   });
+}
+// initMap();
+async function renderMarker(pos){
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    const marker1 = new AdvancedMarkerElement({
+        map: map,
+        position: pos,
+        title: "sak",
+      });
+}
+
+
+
+
