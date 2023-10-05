@@ -2,15 +2,42 @@ const brr = JSON.parse(localStorage.getItem("ResultArray"));
 // const results = "results";
 const arr = brr.results;
 let map;
-initMap()
+// let userLocation;
+// initMap()
 
 console.log(arr);
 
+function CalculateDistance(listingLocation){
+  let userLocation;
+  let lati;
+  let longi;
+  // function getUserLocation(){
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        //  userLocation = {
+              lati = position.coords.latitude
+              longi = position.coords.longitude
+          // };
+      });
+  }
+  // }
+  let distance;
+  fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${lati},${longi}&destinations=${listingLocation}&key=AIzaSyCXA297gtsXAQSR_gBL_17HHuk4ZmR4IuA`)
+        .then(response => response.json())
+        .then(data => {
+            distance = data.rows[0].elements[0].distance.text;
 
-function renderUI() {
+        });
+        return distance;
+}
+
+function CreateListCards() {
   const listing = document.getElementById("Listings");
 
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 5; i++) {
+    const listingLocation = `${arr[i].lat},${arr[i].lng}`;
+    const distance = CalculateDistance(listingLocation);
+
     const block = document.createElement("div");
     block.className = "block1";
     block.innerHTML = `
@@ -27,8 +54,8 @@ function renderUI() {
                                 </div>
                                 <div class="listingDivider"></div>
                                 <div class="desc2">
-                                    <p>${arr[i].persons} guests · Entire Home · ${arr[i].beds} beds · ${arr[i].bathrooms} bath</p>
-                                    <p>Wifi · Kitchen · Free Parking</p>
+                                    <p>${arr[i].persons} guests · Free Parking · ${arr[i].beds} beds · ${arr[i].bathrooms} bath</p>
+                                    <p>Wifi · Kitchen · ${distance}km Distance from you</p>
                                 </div>
                                 <div class="listingDivider"></div>
                                 <div class="desc3">
@@ -49,21 +76,15 @@ function renderUI() {
     listing.append(block,divider)
   }
 }
-
-renderUI();
+// CreateListCards();
 
 
 
 async function initMap() {
-  // The location of Uluru
   const position = { lat:  12.92974, lng: 75.80003 };
-//   const position1 = { lat: 12.94582, lng: 75.78859 };
-  // Request needed libraries.
-  //@ts-ignore
-  const { Map } = await google.maps.importLibrary("maps");
-//   const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
-  // The map, centered at Uluru
+  const { Map } = await google.maps.importLibrary("maps");
+
   map = new Map(document.getElementById("map"), {
     zoom: 15,
     center: position,
@@ -88,10 +109,26 @@ async function renderMarker(pos){
     const marker1 = new AdvancedMarkerElement({
         map: map,
         position: pos,
-        title: "sak",
+        title: "stay",
       });
 }
 
+// function getUserLocation(){
+//   if (navigator.geolocation) {
+//     navigator.geolocation.getCurrentPosition(position => {
+//        userLocation = {
+//             latitud: position.coords.latitude,
+//             longitud: position.coords.longitude
+//         };
+//     });
+// }
+// }
 
+window.onload = function(){
+  // getUserLocation()
 
+  initMap();
 
+  CreateListCards()
+
+}
