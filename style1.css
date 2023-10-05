@@ -179,3 +179,13 @@ main{
     background-color: antiquewhite;
     margin-top:20px
 }
+.costBDn{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+.costBDn:hover{
+    /* background-color: #E5E7EB; */
+    text-decoration: underline;
+    
+}
