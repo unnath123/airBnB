@@ -1,11 +1,48 @@
-const brr = JSON.parse(localStorage.getItem("ResultArray"));
+
 // const results = "results";
-const arr = brr.results;
+// const arr = brr.results;
+// let arr;
 let map;
 // let userLocation;
 // initMap()
 
-console.log(arr);
+
+async function SecondpageSearch(){
+  const searchVal = document.getElementById("PlaceName").value;
+  const checkIn = document.getElementById("checkIn").value;
+  const checkOut = document.getElementById("checkOut").value;
+  const numGuest = document.getElementById("GuestN").value;
+  // let crr;
+  
+    const url = `https://airbnb13.p.rapidapi.com/search-location?location=${searchVal}&checkin=${checkIn}&checkout=${checkOut}&adults=${numGuest}&children=0&infants=0&pets=0&page=1&currency=USD`;
+    const options = {
+	method: 'GET',
+	headers: {
+		'X-RapidAPI-Key': '408f14ced5mshff03e33a8cb0907p109ecejsn22610675766d',
+		'X-RapidAPI-Host': 'airbnb13.p.rapidapi.com'
+	}
+};
+
+    try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        console.log(result);
+        const crr = result.results
+        initMap();
+        CreateListCards(crr)
+        localStorage.clear()
+        localStorage.setItem("ResultArray",JSON.stringify(result))
+
+    } catch (error) {
+        console.error(error);
+    }
+  
+}
+
+document.getElementById("SecpageBtn").addEventListener("click",SecondpageSearch)
+
+
+// console.log(arr);
 
 function CalculateDistance(listingLocation){
   let userLocation;
@@ -57,9 +94,9 @@ function showBookingCostBreakdown(listing){
   // Add booking cost breakdown to the modal
   modal.innerHTML = `
       <h2>Booking Cost Breakdown</h2>
-      <p>Base Rate: $${listing.rate.toFixed(2)}</p>
-      <p>Additional Fees: $${additionalFees.toFixed(2)}</p>
-      <p>Total Cost: $${totalCost.toFixed(2)}</p>
+      <p>Base Rate: rs ${listing.rate.toFixed(2)}</p>
+      <p>Additional Fees: rs ${additionalFees.toFixed(2)}</p>
+      <p>Total Cost: rs   ${totalCost.toFixed(2)}</p>
   `;
 
   // Add a close button to the modal
@@ -78,9 +115,12 @@ function GetDirections(latlong){
   window.open(url, "_blank");
 }
 
-function CreateListCards() {
+function CreateListCards(arr) {
   const listing = document.getElementById("Listings");
+  console.log(arr[0].name)
 
+  listing.innerHTML =" ";
+  
   for (let i = 0; i < 10; i++) {
     const listingLocation = `${arr[i].lat},${arr[i].lng}`;
     const distance = 20;
@@ -200,11 +240,13 @@ async function renderMarker(pos){
 // }
 // }
 
-window.onload = function(){
+//  window.onload = function(){
   // getUserLocation()
+  const brr = JSON.parse(localStorage.getItem("ResultArray"));
+  const drr = brr.results;
 
   initMap();
 
-  CreateListCards()
+  CreateListCards(drr)
 
-}
+// }
