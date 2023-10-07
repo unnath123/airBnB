@@ -41,6 +41,7 @@ function showBookingCostBreakdown(listing){
 
   // Create a modal dialog box
   const modal = document.createElement("div");
+  modal.className = "modl"
   modal.style.display = "block";
   modal.style.width = "300px";
   modal.style.height = "200px";
@@ -71,20 +72,29 @@ function showBookingCostBreakdown(listing){
   document.body.appendChild(modal);
 }
 
+function GetDirections(latlong){
+//  let latlong = { latitude:  12.92974, longitude: 75.80003 };
+  const url = `https://www.google.com/maps/dir//${latlong.latitude},${latlong.longitude}`;
+  window.open(url, "_blank");
+}
 
 function CreateListCards() {
   const listing = document.getElementById("Listings");
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 10; i++) {
     const listingLocation = `${arr[i].lat},${arr[i].lng}`;
-    const distance = 20
+    const distance = 20;
+    let SH = arr[i].isSuperhost;
     // CalculateDistance(listingLocation);
+    let latlng = {latitude:arr[i].lat,
+                  longitude:arr[i].lng}
 
     const block = document.createElement("div");
     block.className = "block1";
     block.innerHTML = `
-        <div class="listing-image">
+        <div class="listing-image" id="listing-img${i}">
                                 <img src="${arr[i].images[0]}" alt="">
+                            
                             </div>
                             <div class="listing-desc">
                                 <div class="desc1">
@@ -92,6 +102,7 @@ function CreateListCards() {
                                         <p class="ds-1">${arr[i].type}</p>
                                         <p class="ds-2">${arr[i].name}</p>
                                     </div>
+                                   
                                     <div class="heart"><img src="./searchpage/heart.png" alt=""></div>
                                 </div>
                                 <div class="listingDivider"></div>
@@ -102,13 +113,34 @@ function CreateListCards() {
                                 <div class="listingDivider"></div>
                                 <div class="desc3">
                                     <div class="desc3-one"><p>${arr[i].rating}<i class="fa-solid fa-star" style="color: #fddc08;"></i> (${arr[i].reviewsCount}reviews)</p></div>
+                                    <div>
+                                      <button class="Mapbutton" onclick='GetDirections(${JSON.stringify(latlng)})'>Get Directions</button>
+                                    </div>
                                     <div class="desc3-two"><button class="costBDn" onclick='showBookingCostBreakdown(${JSON.stringify(arr[i].price)})'>${(arr[i].price.rate)*80}rs / night</button></div>
                                 </div>
                             </div>
                             
                             `;
                   
-  
+    // createSuperHost div
+    // if(arr[i].)
+    if(arr[i].rareFind){
+      const rareFinddiv = document.createElement("div")
+      rareFinddiv.className = "superHost";
+      rareFinddiv.innerHTML = `
+      <p>rareFind</p>
+      `
+      block.appendChild(rareFinddiv);
+    }
+    else if(SH){
+      const SuperHostdiv = document.createElement("div")
+      SuperHostdiv.className = "superHost";
+      SuperHostdiv.innerHTML = `
+      <p>Superhost</p>
+      `
+      block.appendChild(SuperHostdiv);
+    }
+    
 
     // render marker on map for the location
     let pos ={ lat:  arr[i].lat, lng: arr[i].lng };
